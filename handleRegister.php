@@ -1,7 +1,6 @@
 <?php
 
 if (isset($_POST["submit"])) {
-    //catch
     $username = trim(htmlspecialchars($_POST["username"]));
     $password = trim(htmlspecialchars($_POST["password"]));
     // $password = hash('sha256', $password);
@@ -10,9 +9,26 @@ if (isset($_POST["submit"])) {
     $age = trim(htmlspecialchars($_POST["age"]));
     $gender = trim(htmlspecialchars($_POST["gender"]));
 
-    //validation
-    $errors = [];
+    $image = $_FILES["file"];
+    $file_name =  $image["name"];
+    $file_tmp =  $image["tmp_name"];
+    $file_size =  $image["size"];
+    $file_ext = pathinfo($file_name, PATHINFO_EXTENSION);
+    $file_ext = strtolower($file_ext);
+    $allowed = array("jpg", "jpeg", "png", "gif");
     $gender_arr = ["male", "female"];
+    $errors = [];
+
+    if (!in_array($file_ext, $allowed)) {
+        $errors[] = "Error: Only JPG, JPEG, PNG & GIF files are allowed.";
+        exit();
+    };
+    if ($file_size > 2097152) {
+        $errors[] = "Error: File size cannot exceed 2MB.";
+        exit();
+    };
+    $file_destination = 'uploads/' . uniqid('', true) . '.' . $file_ext;
+    //validation
     if (empty($username) || empty($password) || empty($email) || empty($age) || empty($gender)) {
         $errors[] = "Please fill in all fields";
     } elseif (!is_string($username)) {
@@ -40,10 +56,14 @@ if (isset($_POST["submit"])) {
     }
     // end validation
     if (empty($errors)) {
-        //insert into database
-        print_r($_POST);
+        $upload = move_uploaded_file($file_tmp, $file_destination);
+        if (!$upload) {
+            $errors[] = "Error: File upload failed.";
+            exit();
+        };
+        echo "Register & File uploaded successfully.";
     } else {
-        echo json_encode($errors); //return errors
+        echo json_encode($errors);
     }
 } else {
     header("location:register.php");
