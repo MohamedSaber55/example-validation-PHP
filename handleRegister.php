@@ -1,4 +1,5 @@
 <?php
+session_start();
 
 if (isset($_POST["submit"])) {
     $username = trim(htmlspecialchars($_POST["username"]));
@@ -63,7 +64,14 @@ if (isset($_POST["submit"])) {
         };
         echo "Register & File uploaded successfully.";
     } else {
-        echo json_encode($errors);
+        setcookie("username", $username, time() + 60 * 60 * 24 * 14);
+        setcookie("email", $email, time() + 60 * 60 * 24 * 14);
+        setcookie("age", $age, time() + 60 * 60 * 24 * 14);
+        $_SESSION["errors"] = $errors;
+        $_SESSION["username"] = $username;
+        $_SESSION["email"] = $email;
+        $_SESSION["age"] = $age;
+        header("location:register.php");
     }
 } else {
     header("location:register.php");

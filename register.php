@@ -55,30 +55,53 @@
 </head>
 
 <body>
+    <?php
+    session_start();
+    if(!empty($_SESSION["errors"])){
+        foreach($_SESSION["errors"] as $error){
+            echo "<p style='color: red'>" . $error . "</p>";
+        }
+        // echo "<p style='color: red'>" . implode("<br>", $_SESSION["errors"]) . "</p>";
+
+    };
+    ?>
     <form action="handleRegister.php" method="post" id="registerForm" enctype="multipart/form-data">
         <label for="username">Username:</label>
-        <input type="text" id="username" name="username" required>
+        <input type="text" id="username" name="username"
+            <!-- value="<?= isset($_COOKIE['username']) ? htmlspecialchars($_COOKIE['username']) : '' ?>"> -->
+            value="<?= isset($_COOKIE['username']) ? htmlspecialchars($_COOKIE['username']) : '' ?>">
         <br>
+
         <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required>
+        <input type="email" id="email" name="email"
+            value="<?= isset($_COOKIE['email']) ? htmlspecialchars($_COOKIE['email']) : '' ?>">
         <br>
+
         <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required>
+        <input type="password" id="password" name="password">
         <br>
+
         <label for="age">Age:</label>
-        <input type="number" id="age" name="age" required>
+        <input type="number" id="age" name="age"
+            value="<?= isset($_COOKIE['age']) ? htmlspecialchars($_COOKIE['age']) : '' ?>">
         <br>
+
         <label for="file">File:</label>
-        <input type="file" id="file" name="file" required />
+        <input type="file" id="file" name="file" accept=".jpg, .jpeg, .png, .gif" required>
         <br>
+
         <label for="gender">Gender:</label>
-        <input type="radio" id="male" name="gender" value="male" />
+        <input type="radio" id="male" name="gender" value="male"
+            <?= (isset($_COOKIE['gender']) && $_COOKIE['gender'] === 'male') ? 'checked' : '' ?>>
         <label for="male">Male</label>
-        <input type="radio" id="female" name="gender" value="female" />
+        <input type="radio" id="female" name="gender" value="female"
+            <?= (isset($_COOKIE['gender']) && $_COOKIE['gender'] === 'female') ? 'checked' : '' ?>>
         <label for="female">Female</label>
         <br>
+
         <input type="submit" name="submit" value="Register">
     </form>
+
 
 </body>
 
